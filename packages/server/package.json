@@ -1,0 +1,9 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "server for RESTful-api",
+  "main": "server.js",
+  "repository": "https://github.com/a-GumaryaN/RESTful.git/packages/server",
+  "author": "GumaryaN",
+  "license": "ISC"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "REST-api",
+  "version": "1.0.0",
+  "description": "an exercise project with typescript , type-mongoose , nodejs and rest api",
+  "main": "server.js",
+  "repository": "https://github.com/a-GumaryaN/RESTful.git",
+  "author": "GumaryaN",
+  "license": "ISC"
+}
