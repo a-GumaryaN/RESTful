@@ -1,0 +1,8 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "description": "wep package for RESTful-api exercise project",
+  "main": "index.js",
+  "repository": "https://github.com/a-GumaryaN/RESTful.git/packages/web",
+  "license": "ISC"
+}
