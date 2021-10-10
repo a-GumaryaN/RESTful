@@ -5,5 +5,9 @@
   "main": "server.js",
   "repository": "https://github.com/a-GumaryaN/RESTful.git/packages/server",
   "author": "GumaryaN",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.13",
+    "@types/mongoose": "^5.11.97"
+  }
 }
