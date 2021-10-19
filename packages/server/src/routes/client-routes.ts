@@ -15,11 +15,11 @@ router.post('/client', (req: any, res: any) => {
     addClient(req, res);
 });
 
-router.put('/client/:id', (req: any, res: any) => {
+router.put('/client/:_id', (req: any, res: any) => {
     updateClient(req, res);
 });
 
-router.delete('/client/:id', (req: any, res: any) => {
+router.delete('/client/:_id', (req: any, res: any) => {
     deleteClient(req, res);
 });
 
