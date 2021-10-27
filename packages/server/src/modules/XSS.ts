@@ -16,7 +16,7 @@ const tagOrComment = new RegExp(
     ')>',
     'gi');
 
-export const removeTags = (input: String) => {
+export const removeTags = (input: String):string => {
     let oldinput;
     do {
         oldinput = input;

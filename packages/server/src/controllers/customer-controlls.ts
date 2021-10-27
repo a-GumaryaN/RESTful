@@ -2,17 +2,18 @@ import { customerModel } from '../db/customer-module';
 import * as joi from 'joi';
 import { removeTags } from '../modules/XSS';
 import * as jwt from 'jsonwebtoken';
-const crypto = require('crypto');
 import { auth } from '../modules/auth'
+import {
+    FindOne,
+    Save,
+    UpdateOne,
+    DeleteOne,
+    hasher,
+    secretKey
+} from '../modules/modules';
 
-export const secretKey: string = "mfef#%3,s/,.!#";
 
 
-const hasher = (algo: string, input: string, charStandard: string, hashFormat: string) => {
-    const hash = crypto.createHash(algo);
-    hash.update(input, charStandard);
-    return hash.digest(hashFormat);
-}
 
 const registerSchema = joi.object({
     username: joi.string()
@@ -31,10 +32,6 @@ const updateSchema = joi.object({
     age: joi.number(),
 });
 
-async function Save(object) {
-    return await object.save();
-}
-
 async function Find(object) {
     return await object.save();
 }
@@ -52,14 +49,13 @@ export const register = (req: any, res: any) => {
 
     const clearUsername = removeTags(req.body.username);
 
-    customerModel.findOne({ _id: clearUsername })
+    FindOne(customerModel, { _id: clearUsername })
         .then((result) => {
             if (result) return res.send(`user registered last`)
         })
         .catch((err) => {
             return res.send(err);
         });
-
 
 
     const clearPass = removeTags(req.body.password);
@@ -89,23 +85,29 @@ export const login = (req: any, res: any) => {
         });
     if (error) return res.send(error);
 
-    const clearUsername = removeTags(req.body.password);
+    const clearUsername = removeTags(req.body.username);
     const clearPass = removeTags(req.body.password);
     const hashedPassword = hasher('md5', clearPass, 'utf-8', 'hex');
 
-    customerModel.findOne({ username: clearUsername })
+
+
+    FindOne(customerModel, { _id: clearUsername })
         .then((result) => {
-            if (!result) res.status(400).send(`user with this username not registered`)
+            if (!result) res
+                .status(400)
+                .send(`user with this username not registered`)
 
             if (result.password !== hashedPassword)
                 res
                     .status(400)
                     .send(`password not valid...`)
 
-            const madeToken: string =
-                jwt.sign({ username: req.body.username }, secretKey)
+            const expireDate = new Date().getTime() + 60;
 
-            res.header('auth-token', madeToken).send(madeToken);
+            const madeToken: string =
+                jwt.sign({ username: req.body.username, expireDate:expireDate }, secretKey)
+
+            res.header('auth-token', madeToken).send('logged in successfully...');
 
         })
         .catch((err) => {
@@ -131,9 +133,9 @@ export const update = (req, res) => {
 
     if (error) return res.send(error);
 
-    const decodedToken = jwt.decode(req.headers.authheader);
+    const decodedToken: any = jwt.decode(req.headers.authheader);
 
-    customerModel.updateOne({ _id: decodedToken.username }, req.body)
+    UpdateOne(customerModel, { _id: decodedToken.username }, req.body)
         .then((result) => {
             res.send(`successfully updated...`);
         })
@@ -147,9 +149,9 @@ export const update = (req, res) => {
 export const Delete = (req: any, res: any) => {
     auth(req.headers.authheader, secretKey, res);
 
-    const delete_id = jwt.decode(req.headers.authheader);
+    const delete_id: any = jwt.decode(req.headers.authheader);
 
-    customerModel.findOne({ _id: delete_id.username })
+    FindOne(customerModel, { _id: delete_id.username })
         .then((result) => {
             if (!result) return res.send(`user not found...`)
         })
@@ -157,7 +159,7 @@ export const Delete = (req: any, res: any) => {
             return res.send(err);
         });
 
-    customerModel.deleteOne({ _id: delete_id.username })
+    DeleteOne(customerModel, { _id: delete_id.username })
         .then((result) => {
             res.send(`successfully deleted...`);
         })

@@ -1,11 +1,22 @@
 import * as jwt from 'jsonwebtoken';
-export const auth = (token, secretKey,res) => {
-    if (!token) res.status(401).send('access denied...');
+const date = new Date();
+
+export const auth = (token, secretKey, res): (boolean | Function) => {
+    if (!token) return res.status(401).send('access denied...');
     try {
+        const nowDate = date.getTime();
+        const info: any = jwt.decode(token);
+
+        if (nowDate > info.expireDate) res
+            .status(400)
+            .send('token is expired...');
+
+
         const userVerified = jwt.verify(token, secretKey);
-        if (userVerified)return true;
-        res.status(400).send('invalid token...');
+        if (userVerified) return true;
+
+        return res.status(400).send('invalid token...');
     } catch (err) {
-        res.status(400).send('invalid token...');
+        return res.status(400).send('invalid token...');
     }
 }
