@@ -5,12 +5,13 @@ import {
     login,
     register,
     update,
-    Delete
+    Delete,
+    getInfo
 } from '../controllers/customer-controlls';
 
 //routes for read client information
 router.get('/', (req, res) => {
-
+    getInfo(req,res);
 });
 
 

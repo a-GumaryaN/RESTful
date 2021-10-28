@@ -1,10 +1,9 @@
 import * as jwt from 'jsonwebtoken';
-const date = new Date();
 
 export const auth = (token, secretKey, res): (boolean | Function) => {
     if (!token) return res.status(401).send('access denied...');
     try {
-        const nowDate = date.getTime();
+        const nowDate = new Date().getTime();
         const info: any = jwt.decode(token);
 
         if (nowDate > info.expireDate) res

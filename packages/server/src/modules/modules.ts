@@ -18,7 +18,8 @@ export async function DeleteOne(model, query): Promise<any>{
     return await model.deleteOne(query);
 }
 
-export const hasher = (algo: string, input: string, charStandard: string, hashFormat: string) => {
+export const hasher = 
+(algo: string, input: string, charStandard: string, hashFormat: string) => {
     const hash = crypto.createHash(algo);
     hash.update(input, charStandard);
     return hash.digest(hashFormat);

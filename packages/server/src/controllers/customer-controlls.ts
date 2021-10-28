@@ -12,9 +12,6 @@ import {
     secretKey
 } from '../modules/modules';
 
-
-
-
 const registerSchema = joi.object({
     username: joi.string()
         .min(10)
@@ -32,11 +29,25 @@ const updateSchema = joi.object({
     age: joi.number(),
 });
 
-async function Find(object) {
-    return await object.save();
+export const getInfo=(req,res)=>{
+
+    const { error } = registerSchema.validate(
+        {
+            username: req.body.username,
+            password: req.body.password
+        });
+    if (error) return res.send(error);
+
+    const clearUsername = removeTags(req.query.username);
+
+    FindOne(customerModel, { _id: clearUsername })
+        .then((result) => {
+            if (!result) return res.send(result._id);
+        })
+        .catch((err) => {
+            return res.send(err);
+        });
 }
-
-
 
 export const register = (req: any, res: any) => {
 
@@ -90,7 +101,6 @@ export const login = (req: any, res: any) => {
     const hashedPassword = hasher('md5', clearPass, 'utf-8', 'hex');
 
 
-
     FindOne(customerModel, { _id: clearUsername })
         .then((result) => {
             if (!result) res
@@ -102,7 +112,7 @@ export const login = (req: any, res: any) => {
                     .status(400)
                     .send(`password not valid...`)
 
-            const expireDate = new Date().getTime() + 60;
+            const expireDate = new Date().getTime() + 120000;
 
             const madeToken: string =
                 jwt.sign({ username: req.body.username, expireDate:expireDate }, secretKey)
